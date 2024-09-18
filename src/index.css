@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nav-hr{
+   @apply w-5 text-center mx-auto border-none h-[1.5px] bg-white 
+}
+
+/* for large devices */
+a.active hr{
+    @apply bg-slate-400
+}
+
+/* for mobile sidemenu */
+.mobile-link.active, .mobile-link.active:hover{
+    @apply bg-slate-900 text-slate-100
+}
