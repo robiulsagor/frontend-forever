@@ -6,7 +6,7 @@ import { assets } from "../assets/assets"
 
 const Collection = () => {
   const [showFilter, setShowFilter] = useState(false)
-  const {products} = useContext(ShopContext)
+  const {products, search, showSearch} = useContext(ShopContext)
   const [filterProducts, setFilterProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
@@ -30,6 +30,10 @@ const Collection = () => {
 
   const applyFilter = ()=> {
     let productsCopy = products.slice()
+
+    if(search && showSearch){
+      productsCopy = productsCopy.filter(item=> item.name.toLowerCase().includes(search.toLowerCase()))
+    }
     
     if(categories.length > 0){
       productsCopy= productsCopy.filter(item=> categories.includes(item.category))
@@ -60,12 +64,11 @@ const Collection = () => {
 
   useEffect(()=> {
     applyFilter()
-  }, [categories, subCategories])
+  }, [categories, subCategories, search, showSearch])
 
   useEffect(()=> {
     sortProducts()
   }, [sortType])
-
 
   return (
     <div className="flex flex-col sm:flex-row py-10 gap-10">

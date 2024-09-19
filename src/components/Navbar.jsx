@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom'
 import {assets} from '../assets/assets'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { ShopContext } from '../context/ShopContext'
 
 const NAV_LINKS = [
     {
@@ -27,6 +28,7 @@ const NAV_LINKS = [
 
 const Navbar = () => {
     const [showMenu, setShowMenu] = useState(false)
+    const {setShowSearch} = useContext(ShopContext)
 
   return (
     <div className="py-5 flex items-center justify-between">
@@ -44,7 +46,7 @@ const Navbar = () => {
         </div>
 
         <div className='flex items-center gap-6'>
-            <img src={assets.search_icon} className='w-5 cursor-pointer' alt="" />
+            <img src={assets.search_icon} onClick={()=> setShowSearch(prev => !prev)} className='w-5 cursor-pointer' alt="" />
             <img src={assets.profile_icon} className='w-5 cursor-pointer' alt="" />
 
             <div className='relative'>
@@ -56,7 +58,7 @@ const Navbar = () => {
         </div>
 
         {/* for small screen */}
-         <div className={`absolute top-0 right-0 bg-white  h-screen overflow-hidden ${showMenu ? "w-full" : 'w-0'} transition-all`}> 
+        <div className={`absolute top-0 right-0 bg-white  h-screen overflow-hidden ${showMenu ? "w-full" : 'w-0'} transition-all`}> 
             <div className='flex items-center gap-4 text-lg font-medium p-3 cursor-pointer' onClick={()=> setShowMenu(false)}>
                 <img src={assets.dropdown_icon} className='rotate-180 w-3 h-5' alt="" />
                 <p>Back</p>
@@ -67,7 +69,7 @@ const Navbar = () => {
                  {item.label}
              </NavLink>
             ))}
-             </div>
+        </div>
     </div>
   )
 }
