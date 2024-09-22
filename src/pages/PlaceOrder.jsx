@@ -37,8 +37,8 @@ const PlaceOrder = () => {
 
       </div>
 
-      <div className="w-full px-5  sm:ml-auto">
-        <div className="mt-8 min-w-80">
+      <div className="w-full  sm:ml-auto lg:max-w-[550px]">
+        <div className="mt-8 min-w-80 ">
           <CartTotal />
         </div>
         
@@ -47,22 +47,26 @@ const PlaceOrder = () => {
           />
         </div>
 
-        <div className="mt-3 flex gap-3 flex-wrap">
+        <div className="mt-3 flex gap-3 flex-wrap justify-between">
           <div onClick={()=> setPaymentType('stripe')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
             <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'stripe' ? 'bg-green-400' : ''}`}></p>
-            <img src={assets.stripe_logo} className="h-5 mx-4" alt="" />
+            <img src={assets.stripe_logo} className="h-4 mx-4" alt="" />
           </div>
 
           <div onClick={()=> setPaymentType('razor')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
             <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'razor' ? 'bg-green-400' : ''}`}></p>
-            <img src={assets.razorpay_logo} className="w-28 h-auto" alt="" />
+            <img src={assets.razorpay_logo} className="w-24 h-auto" alt="" />
           </div>
 
-          <div onClick={()=> setPaymentType('cod')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
-          <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'cod' ? 'bg-green-400' : ''}`}></p>
+          <div onClick={()=> setPaymentType('cod')} className="flex items-center gap-3 border p-1.5 px-3 cursor-pointer">
+            <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'cod' ? 'bg-green-400' : ''}`}></p>
             <p className="uppercase text-gray-500 font-semibold text-sm">cash on delivery</p>
           </div>
 
+        </div>
+
+        <div className="text-end mt-4">
+          <button className="bg-black text-white px-14 py-1.5 uppercase">Place order</button>
         </div>
       </div>
     </div>
