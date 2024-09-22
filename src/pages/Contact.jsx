@@ -12,9 +12,9 @@ const Contact = () => {
 
 
 
-        <div className="mt-12 flex justify-center items-center gap-10">
-          <img src={assets.contact_img} className="w-full md:max-w-[430px]" alt="" />
-          <div className="flex flex-col items-start gap-5 text-gray-500 text-base">
+        <div className="mt-12 flex flex-col md:flex-row justify-center items-center gap-10">
+          <img src={assets.contact_img} className="w-full sm:w-[80%] mx-auto md:max-w-[430px]" alt="" />
+          <div className="w-full flex flex-col items-start gap-5 text-gray-500 text-base">
             <p className="font-semibold text-xl">Our store</p>
             <p>7365 Williams Station <br /> Suite 350, Washington, USA </p>
             <p>Tel: (314) 444-555</p>
