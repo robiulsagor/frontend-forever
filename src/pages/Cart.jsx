@@ -6,9 +6,11 @@ import Title from "../components/Title"
 import { ShopContext } from '../context/ShopContext'
 import { useToastContainer } from 'react-toastify'
 import CartTotal from '../components/CartTotal'
+import { useNavigate } from 'react-router-dom'
 
 const Cart = () => {
   const {cartItems, products, currency, updateQuantity, deleteItem} = useContext(ShopContext)
+  const navigate = useNavigate()
 
 
 
@@ -63,7 +65,12 @@ const Cart = () => {
 
       {/* if there is no items in cart, don't show the checkout button */}
       {cartItems.length > 0 && (
+        <div className='px-5 sm:max-w-[450px] sm:ml-auto'>
         <CartTotal />
+        <button
+        onClick={()=> navigate("/place-order")}
+        className='px-4 py-2 text-white  bg-black uppercase rounded-sm mt-5 ml-auto block disabled:opacity-40 disabled:cursor-not-allowed' disabled={cartItems.length === 0}>proceed to checkout</button>
+        </div>
       )}
       
     </div>
