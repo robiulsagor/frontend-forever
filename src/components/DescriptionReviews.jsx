@@ -9,12 +9,12 @@ const DescriptionReviews = () => {
     <div className="mt-10">
     <div>
       <button onClick={()=> setShowType('description')}
-       className={`border border-b-0 border-r-0 rounded-tl-md px-5 py-2 relative ${showType === 'description' ? 'font-semibold border-gray-400 border-r' : ''}`}>Description
+       className={`border  rounded-tl-md px-5 py-2 relative ${showType === 'description' ? 'font-semibold border-gray-400 border-r cursor-auto' : 'cursor-pointer hover:bg-slate-100'}`}>Description
         <span className={`inline-block w-full h-2 bg-white absolute -bottom-1 left-0  ${showType === 'description' ? '' : 'hidden'}`}></span>
        </button>
 
       <button onClick={()=> setShowType('reviews')}
-       className={`border border-b-0 rounded-tr-md px-5 py-2 relative ${showType === 'reviews' ? 'font-semibold border-gray-400 border-l border-b border-b-red-500' : ''}`}>Reviews
+       className={`border rounded-tr-md px-5 py-2 relative ${showType === 'reviews' ? 'font-semibold border-gray-400 border-l cursor-auto' : 'cursor-pointer hover:bg-slate-100'}`}>Reviews
      
        <span className={`inline-block w-full h-2 bg-white absolute -bottom-1 left-0  ${showType === 'reviews' ? '' : 'hidden'}`}></span>
        </button>

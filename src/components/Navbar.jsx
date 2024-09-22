@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import {assets} from '../assets/assets'
 import { useContext, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
@@ -28,7 +28,12 @@ const NAV_LINKS = [
 
 const Navbar = () => {
     const [showMenu, setShowMenu] = useState(false)
-    const {setShowSearch} = useContext(ShopContext)
+    const {setShowSearch, cartItems} = useContext(ShopContext)
+    const totalItems = cartItems.reduce((total, item) => {
+        return total + item.count;
+      }, 0);
+      
+    const navigate = useNavigate()
 
   return (
     <div className="py-5 flex items-center justify-between">
@@ -49,9 +54,12 @@ const Navbar = () => {
             <img src={assets.search_icon} onClick={()=> setShowSearch(prev => !prev)} className='w-5 cursor-pointer' alt="" />
             <img src={assets.profile_icon} className='w-5 cursor-pointer' alt="" />
 
-            <div className='relative'>
+            <div className='relative'
+            onClick={()=> navigate("/cart")}>
                 <img src={assets.cart_icon} className='w-5 cursor-pointer' alt="" />
-                <span className='absolute bg-slate-900 aspect-square text-white bottom-[-5px] right-[-5px] text-xs w-4 text-center rounded-full leading-4 select-none'>50</span>
+                <span className='absolute bg-slate-900 aspect-square text-white bottom-[-5px] right-[-5px] text-xs w-4 text-center rounded-full leading-4 select-none cursor-pointer'>
+                    {totalItems}
+                </span>
             </div>
 
             <img onClick={()=> setShowMenu(true)} src={assets.menu_icon} className='w-5 sm:hidden cursor-pointer' alt="" />

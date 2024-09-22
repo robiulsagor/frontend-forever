@@ -8,14 +8,11 @@ import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
   const {productId} = useParams()
-  const {products, currency} = useContext(ShopContext)
+  const {products, currency, cartItems, addToCart} = useContext(ShopContext)
 
   const [productData, setProductData] = useState({})
   const [productImg, setProductImg] = useState([])
   const [productSize, setProductSize] = useState('')
-
-
-  
 
   const fetchProductData = ()=> {
     products.map(item => {
@@ -38,7 +35,7 @@ const Product = () => {
 
           <div className=" w-[25%] overflow-hidden flex flex-col gap-1.5">
             {productData.image.map((img, index)=> (
-              <img key={index} src={img} className="" alt="" />
+              <img onClick={()=> setProductImg(img)} key={index} src={img} className={`cursor-pointer ${productImg === img ? 'border border-orange-500' : ''}`} alt="" />
             ))}
           </div>
           <div className="w-full border ">
@@ -73,7 +70,9 @@ const Product = () => {
             </div>
           </div>
 
-          <button className="bg-black text-white px-5 py-2 uppercase mt-6 rounded-sm transition-colors hover:bg-slate-700">Add to Cart</button>
+            {/* Add to cart button */}
+          <button className="bg-black text-white px-5 py-2 uppercase mt-6 rounded-sm transition-colors hover:bg-slate-700"
+          onClick={()=> addToCart(productData._id, productSize)}>Add to Cart</button>
 
           <hr className="my-8 w-4/5"/>
 
