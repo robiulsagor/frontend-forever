@@ -148,8 +148,8 @@ const Collection = () => {
             <Product key={index} id={item._id} name={item.name} img={item.image} price={item.price} />
           ))}
 
-          {loading ? (<div className="w-full h-full flex items-center justify-center">
-            <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 border-t-orange-400 border-b-transparent border-r-transparent border-l-transparent rounded-full" role="status">
+          {loading ? (<div className="w-full h-[40vh] flex items-center justify-center col-span-4">
+            <div className="spinner-border  inline-block w-8 h-8 border-4 border-t-orange-400 border-b-transparent border-r-transparent border-l-transparent animate-spin rounded-full" role="status">
               <span className="visually-hidden hidden">Loading...</span>
             </div>
           </div>) : filterProducts.length > 0 ? (filterProducts.map((item, index) => (
