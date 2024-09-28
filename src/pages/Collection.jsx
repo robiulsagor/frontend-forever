@@ -6,9 +6,8 @@ import Product from "../components/Product"
 import { assets } from "../assets/assets"
 
 const Collection = () => {
-  const [products, setProducts] = useState([])
   const [showFilter, setShowFilter] = useState(false)
-  const { search, showSearch } = useContext(ShopContext)
+  const { search, showSearch, products } = useContext(ShopContext)
   const [filterProducts, setFilterProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
@@ -45,6 +44,7 @@ const Collection = () => {
       productsCopy = productsCopy.filter(item => subCategories.includes(item.subCategory))
     }
     setFilterProducts(productsCopy)
+    setLoading(false)
   }
 
   const sortProducts = () => {
@@ -65,31 +65,13 @@ const Collection = () => {
 
   }
 
-  const fetchProducts = async () => {
-    setLoading(true)
-    try {
-      const res = await axios.get('http://localhost:5000/api/product/list')
-      if (res.data.success) {
-        setProducts(res.data.products)
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
     applyFilter()
-  }, [categories, subCategories, search, showSearch, products])
+  }, [categories, subCategories, search, showSearch])
 
   useEffect(() => {
     sortProducts()
   }, [sortType])
-
-  useEffect(() => {
-    fetchProducts()
-  }, [])
 
   return (
     <div className="flex flex-col sm:flex-row py-10 gap-10">

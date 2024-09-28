@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 export const ShopContext = createContext()
@@ -8,6 +9,13 @@ const ShopContextProvider = ({ children }) => {
   const [showSearch, setShowSearch] = useState(false)
   const [products, setProducts] = useState([])
   const [cartItems, setCartItems] = useState([])
+
+  const fetchProducts = async () => {
+    const res = await axios.get('http://localhost:5000/api/product/list')
+    if (res.data.success) {
+      setProducts(res.data.products)
+    }
+  }
 
   const addToCart = (id, size) => {
     if (!size) {
@@ -67,9 +75,10 @@ const ShopContextProvider = ({ children }) => {
     return totalPrice;
   };
 
-  const fetchProducts = async () => {
+  useEffect(() => {
+    fetchProducts()
+  }, [])
 
-  }
 
   const currency = "$"
   const delivery_fee = 10

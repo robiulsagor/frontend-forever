@@ -14,28 +14,28 @@ import Footer from "./components/Footer"
 import Search from "./components/Search"
 
 import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <div className="px-4 sm:px-[5wv] md:px-[7vw] lg:px-[9vw]">
-      <Navbar/>
-      <Search/>
-      
+      <Navbar />
+      <Search />
+
       <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="/about" element={<About/>} />
-        <Route path="/cart" element={<Cart/>} />
-        <Route path="/contact" element={<Contact/>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/collection" element={<Collection />} />
-        <Route path="/product/:productId" element={<Product/>} />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/product/:productId" element={<Product />} />
+        <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <ToastContainer position="bottom-right" key={'item'}/>
-      <Footer/>
+      <ToastContainer position="bottom-right" key={'item'} autoClose={1000} />
+      <Footer />
     </div>
   )
 }

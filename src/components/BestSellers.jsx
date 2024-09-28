@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Title from "./Title"
 import Product from "./Product"
-import axios from "axios"
+import { ShopContext } from "../context/ShopContext"
+
 const BestSellers = () => {
     const [bestProducts, setBestProducts] = useState([])
+    const { products } = useContext(ShopContext)
 
     const fetchProducts = async () => {
-        try {
-            const res = await axios.get('http://localhost:5000/api/product/list')
-            if (res.data.success) {
-                setBestProducts(res.data.products.filter(p => p.bestSeller))
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        setBestProducts(products.filter(p => p.bestSeller))
     }
 
     useEffect(() => {
         fetchProducts()
-    }, [])
+    }, [products])
 
 
     return (

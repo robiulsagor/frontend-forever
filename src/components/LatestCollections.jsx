@@ -2,27 +2,18 @@ import { useContext, useEffect, useState } from "react"
 import Title from "./Title"
 import { ShopContext } from "../context/ShopContext"
 import Product from "./Product"
-import axios from "axios"
 
 const LatestCollections = () => {
     const { products } = useContext(ShopContext)
     const [latestProducts, setLatestProducts] = useState([])
 
     const fetchProducts = async () => {
-        try {
-            const res = await axios.get('http://localhost:5000/api/product/list')
-            if (res.data.success) {
-                setLatestProducts(res.data.products.slice(0, 10))
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        setLatestProducts(products.slice(0, 10))
     }
 
     useEffect(() => {
         fetchProducts()
     }, [products])
-
 
     return (
         <div className="my-10">
