@@ -10,6 +10,7 @@ const ShopContextProvider = ({ children }) => {
   const [products, setProducts] = useState([])
   const [cartItems, setCartItems] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '')
+  const backendUrl = 'http://localhost:5000/api'
 
   const fetchProducts = async () => {
     const res = await axios.get('http://localhost:5000/api/product/list')
@@ -112,7 +113,7 @@ const ShopContextProvider = ({ children }) => {
   const delivery_fee = 10
   const value = {
     products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
-    cartItems, addToCart, updateQuantity, deleteItem, calculateTotalPrice, token, setToken
+    cartItems, setCartItems, addToCart, updateQuantity, deleteItem, calculateTotalPrice, token, setToken, backendUrl
   }
 
   return (
