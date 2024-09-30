@@ -18,7 +18,7 @@ const ShopContextProvider = ({ children }) => {
     }
   }
 
-  const addToCart = (id, size) => {
+  const addToCart = async (id, size) => {
     if (!size) {
       toast.error("Please select a size!", {
         containerId: "info"
@@ -44,9 +44,15 @@ const ShopContextProvider = ({ children }) => {
 
     // Update the cart state with the new items
     setCartItems(updatedCart);
+
+    // Send the updated cart to the backend
+    if (token) await axios.post('http://localhost:5000/api/cart/addToCart', {
+      productId: id,
+      size,
+    }, { headers: { token } })
   }
 
-  const updateQuantity = (itemId, size, quantity) => {
+  const updateQuantity = async (itemId, size, quantity) => {
     const updatedCart = cartItems.map(item => {
       if (item.id === itemId && item.size === size) {
         return { ...item, count: Number(quantity) }
@@ -55,12 +61,22 @@ const ShopContextProvider = ({ children }) => {
     })
 
     setCartItems(updatedCart)
+    token && await axios.post('http://localhost:5000/api/cart/updateCart', {
+      productId: itemId,
+      quantity,
+      size
+    }, { headers: { token } })
+
     toast.success("Item incremented!")
   }
 
-  const deleteItem = (itemId, size) => {
+  const deleteItem = async (itemId, size) => {
     const newItems = cartItems.filter(item => !(item.id === itemId && item.size === size))
     setCartItems(newItems)
+    token && await axios.post('http://localhost:5000/api/cart/deleteItem', {
+      productId: itemId,
+      size
+    }, { headers: { token } })
     return newItems
   }
 
@@ -76,8 +92,19 @@ const ShopContextProvider = ({ children }) => {
     return totalPrice;
   };
 
+  // Fetch cart items from the backend
+  const fetchCart = async () => {
+    const res = await axios.get('http://localhost:5000/api/cart/getCart', { headers: { token } })
+    if (res.data.success) {
+      setCartItems(res.data.cartData)
+    }
+  }
+
   useEffect(() => {
     fetchProducts()
+    if (token) {
+      fetchCart()
+    }
   }, [])
 
 
