@@ -10,10 +10,11 @@ const ShopContextProvider = ({ children }) => {
   const [products, setProducts] = useState([])
   const [cartItems, setCartItems] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '')
-  const backendUrl = 'http://localhost:5000/api'
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
 
   const fetchProducts = async () => {
-    const res = await axios.get('http://localhost:5000/api/product/list')
+    const res = await axios.get(backendUrl + '/api/product/list')
     if (res.data.success) {
       setProducts(res.data.products)
     }
@@ -47,7 +48,7 @@ const ShopContextProvider = ({ children }) => {
     setCartItems(updatedCart);
 
     // Send the updated cart to the backend
-    if (token) await axios.post('http://localhost:5000/api/cart/addToCart', {
+    if (token) await axios.post(backendUrl + '/api/cart/addToCart', {
       productId: id,
       size,
     }, { headers: { token } })
@@ -62,7 +63,7 @@ const ShopContextProvider = ({ children }) => {
     })
 
     setCartItems(updatedCart)
-    token && await axios.post('http://localhost:5000/api/cart/updateCart', {
+    token && await axios.post(backendUrl + '/api/cart/updateCart', {
       productId: itemId,
       quantity,
       size
@@ -74,7 +75,7 @@ const ShopContextProvider = ({ children }) => {
   const deleteItem = async (itemId, size) => {
     const newItems = cartItems.filter(item => !(item.id === itemId && item.size === size))
     setCartItems(newItems)
-    token && await axios.post('http://localhost:5000/api/cart/deleteItem', {
+    token && await axios.post(backendUrl + '/api/cart/deleteItem', {
       productId: itemId,
       size
     }, { headers: { token } })
@@ -95,7 +96,7 @@ const ShopContextProvider = ({ children }) => {
 
   // Fetch cart items from the backend
   const fetchCart = async () => {
-    const res = await axios.get('http://localhost:5000/api/cart/getCart', { headers: { token } })
+    const res = await axios.get(backendUrl + '/api/cart/getCart', { headers: { token } })
     if (res.data.success) {
       setCartItems(res.data.cartData)
     }
@@ -108,12 +109,11 @@ const ShopContextProvider = ({ children }) => {
     }
   }, [])
 
-
   const currency = "$"
   const delivery_fee = 10
   const value = {
     products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
-    cartItems, setCartItems, addToCart, updateQuantity, deleteItem, calculateTotalPrice, token, setToken, backendUrl
+    cartItems, setCartItems, addToCart, updateQuantity, deleteItem, calculateTotalPrice, token, setToken, backendUrl, fetchCart
   }
 
   return (

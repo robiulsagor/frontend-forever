@@ -63,7 +63,6 @@ const Navbar = () => {
                 <div className='relative group'>
                     <img onClick={() => token === '' && navigate('/login')} src={assets.profile_icon} className='w-5 cursor-pointer' alt="" />
                     {token !== '' && (<div className='overflow-hidden absolute top-[100%] -right-2 bg-white w-40  flex-col rounded-lg shadow-lg hidden group-hover:flex'>
-                        <Link className='hover:bg-slate-100 px-3 py-2' to="/login">Profile</Link>
                         <Link className='hover:bg-slate-100 px-3 py-2' to="/orders">Orders</Link>
                         <p className='hover:bg-slate-100 px-3 py-2 cursor-pointer' onClick={handleLogout}>Logout</p>
                     </div>)}

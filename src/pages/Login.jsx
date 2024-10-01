@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import { ShopContext } from "../context/ShopContext"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { toast } from "react-toastify"
 import axios from "axios"
 
@@ -11,12 +11,14 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const location = useLocation()
+  const from = location.state?.from || '/'
+
   const { token, setToken } = useContext(ShopContext)
   const navigate = useNavigate()
 
   const handleSubmit = async e => {
     e.preventDefault()
-
     setLoading(true)
 
     try {
@@ -25,10 +27,11 @@ const Login = () => {
         if (res.data.success) {
           setToken(res.data.token)
           localStorage.setItem('token', res.data.token)
-          navigate('/')
+          navigate(from)
           toast.success("Logged in successfully!")
         } else {
           toast.error(res.data.message)
+          setLoading(false)
         }
       } else {
         const res = await axios.post('http://localhost:5000/api/user/register', { name, email, password })
@@ -36,14 +39,16 @@ const Login = () => {
           setCurrentState('Login')
           toast.success("Account created successfully!")
         } else {
+          setLoading(false)
           toast.error(res.data.message)
         }
       }
     } catch (error) {
+      setLoading(false)
       console.log(error);
-      toast.error(error.response.data.message || "Something went wrong")
+      console.log(error.message);
+      toast.error(error.message || "Something went wrong")
     }
-    setLoading(false)
   }
 
   // if there is a token, redirect to home page
@@ -61,10 +66,10 @@ const Login = () => {
         <p className="bg-gray-700 h-0.5 w-8"></p>
       </div>
 
-      {currentState !== "Login" && <input type="text" name="name" value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="border border-gray-700 outline-none px-3 py-2 w-full" required />}
-      <input type="email" name="email" placeholder="Email" className="border border-gray-700 outline-none px-3 py-2 w-full"
+      {currentState !== "Login" && <input type="text" name="name" disabled={loading} value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="border border-gray-700 outline-none px-3 py-2 w-full" required />}
+      <input type="email" name="email" disabled={loading} placeholder="Email" className="border border-gray-700 outline-none px-3 py-2 w-full"
         value={email} onChange={e => setEmail(e.target.value)} required />
-      <input type="password" name="password" placeholder="Password" className="border border-gray-700 outline-none px-3 py-2 w-full"
+      <input type="password" name="password" disabled={loading} placeholder="Password" className="border border-gray-700 outline-none px-3 py-2 w-full"
         value={password} onChange={e => setPassword(e.target.value)} required />
 
       <div className="flex items-center justify-between text-sm w-full mt-[-8px]">

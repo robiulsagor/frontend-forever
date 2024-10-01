@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 
 const PlaceOrder = () => {
   const { cartItems, setCartItems, calculateTotalPrice, products, token, backendUrl } = useContext(ShopContext)
-  const [paymentType, setPaymentType] = useState("cod")
+  const [paymentType, setPaymentType] = useState("COD")
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
@@ -31,7 +31,7 @@ const PlaceOrder = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     let items = []
-    console.log(cartItems);
+
     cartItems.map((item) => {
       let product = products.find((product) => product._id === item.id)
       items.push({ ...product, size: item.size, quantity: item.count })
@@ -44,9 +44,11 @@ const PlaceOrder = () => {
         items
       }
 
+      setCartItems([])
+
       switch (paymentType) {
-        case 'cod':
-          const response = await axios.post(`${backendUrl}/order/place-order`, orderData, {
+        case 'COD':
+          const response = await axios.post(`${backendUrl}/api/order/place-order`, orderData, {
             headers: {
               token
             }
@@ -59,11 +61,16 @@ const PlaceOrder = () => {
             toast.error(response.data.message || "Something went wrong")
           }
           break
-        case 'stripe':
-          console.log('stripe')
-          break
-        case 'razor':
-          console.log('razor')
+
+        case 'Stripe':
+          const res = await axios.post(`${backendUrl}/api/order/place-order-stripe`, orderData, { headers: { token } })
+          setCartItems([])
+          if (res.data.success) {
+            toast.success(res.data.message)
+            window.location.href = res.data.session_url
+          } else {
+            toast.error(res.data.message || "Something went wrong")
+          }
           break
 
         default:
@@ -117,18 +124,18 @@ const PlaceOrder = () => {
         </div>
 
         <div className="mt-3 flex gap-3 flex-wrap justify-between">
-          <div onClick={() => setPaymentType('stripe')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
-            <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'stripe' ? 'bg-green-400' : ''}`}></p>
+          <div onClick={() => setPaymentType('Stripe')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
+            <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'Stripe' ? 'bg-green-400' : ''}`}></p>
             <img src={assets.stripe_logo} className="h-4 mx-4" alt="" />
           </div>
 
-          <div onClick={() => setPaymentType('razor')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
+          {/* <div onClick={() => setPaymentType('razor')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
             <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'razor' ? 'bg-green-400' : ''}`}></p>
             <img src={assets.razorpay_logo} className="w-24 h-auto" alt="" />
-          </div>
+          </div> */}
 
-          <div onClick={() => setPaymentType('cod')} className="flex items-center gap-3 border p-1.5 px-3 cursor-pointer">
-            <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'cod' ? 'bg-green-400' : ''}`}></p>
+          <div onClick={() => setPaymentType('COD')} className="flex items-center gap-3 border p-1.5 px-3 cursor-pointer">
+            <p className={`min-w-3.5 h-3.5 border rounded-full ${paymentType === 'COD' ? 'bg-green-400' : ''}`}></p>
             <p className="uppercase text-gray-500 font-semibold text-sm">cash on delivery</p>
           </div>
 

@@ -7,7 +7,7 @@ import Loader from "../components/Loader"
 import { useNavigate } from "react-router-dom"
 
 const Orders = () => {
-  const { backendUrl, token } = useContext(ShopContext)
+  const { backendUrl, token, cartItems, setCartItems } = useContext(ShopContext)
   const [loading, setLoading] = useState(true)
   const [orders, setOrders] = useState([])
   const navigate = useNavigate()
@@ -15,19 +15,17 @@ const Orders = () => {
   const fetchOrders = async () => {
     setLoading(true)
     try {
-      const res = await axios.get(`${backendUrl}/order/user-orders`, { headers: { token } })
+      const res = await axios.get(`${backendUrl}/api/order/user-orders`, { headers: { token } })
       if (res.data.success) {
-        setOrders(res.data.orders)
         const orderItems = []
 
-
         res.data.orders.map((order) => {
-          console.log(order);
           order.items.map(item => {
+            item.orderId = order._id
             item.paymentMethod = order.paymentMethod
             item.status = order.status
-            item.payment =
-              orderItems.push(item)
+            item.payment = order.payment
+            orderItems.push(item)
           })
         })
         setOrders(orderItems.reverse())
@@ -93,6 +91,47 @@ const Orders = () => {
     return `${date} ${month}, ${year}`
   }
 
+  // if payment method is stripe and payment is false then only show checkout button
+  const handleCheckout = async (orderId) => {
+    let orderToCartItems = []
+
+    try {
+      const res = await axios.post(`${backendUrl}/api/order/handle-checkout`, { orderId }, { headers: { token } })
+      if (res.data.success) {
+        res.data.order.items.map((item) => {
+          let orderCart = {}
+          orderCart.id = item._id
+          orderCart.size = item.size
+          orderCart.count = item.quantity
+          orderToCartItems.push(orderCart)
+        })
+        setCartItems([...cartItems, ...orderToCartItems])
+
+        // delete order from orders
+        const del = await axios.post(`${backendUrl}/api/order/delete-order`, { orderId }, { headers: { token } })
+        if (del.data.success) {
+
+          // add order to cart
+          const addToCart = await axios.post(`${backendUrl}/api/cart/addMultipleToCart`, { data: orderToCartItems }, { headers: { token } })
+          if (addToCart.data.success) {
+            navigate("/cart")
+          } else {
+            toast.error("Error setting cart")
+          }
+        } else {
+          toast.error("Error deleting unpaid order")
+        }
+
+      } else {
+        toast.error("Error getting order details")
+      }
+
+
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message)
+    }
+  }
 
   return (
     <div className="my-10 py-5">
@@ -123,18 +162,23 @@ const Orders = () => {
                   <p className="mt-1 font-semibold">Date: <span className="font-normal">
                     {getDate(item.date)} </span></p>
 
-                  <p className="mt-1 font-semibold">Payment Method: <span className="font-normal">
+                  <p className={`mt-1 font-semibold ${item.paymentMethod === "Stripe" && item.payment === false ? "text-red-600" : ""}`}>Payment Method: <span className="font-normal">
                     {item.paymentMethod} </span></p>
+
                 </div>
               </div>
 
               <div className="ml-24 md:ml-0 flex items-center gap-4 font-semibold">
-                <p className="w-3 h-3 border bg-green-400 rounded-full"></p>
-                <p className="">{item.status} </p>
+                <p className={`w-3 h-3 border  rounded-full ${item.status === "Not Paid" ? "bg-red-600" : "bg-green-400"}`}></p>
+                <p className={`${item.status === "Not Paid" ? "text-red-600" : ""}`}>{item.status} </p>
               </div>
 
               <div className="ml-24 md:ml-0">
-                <button disabled={item.status === 'Delivered'} onClick={fetchOrders} className="border px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Track order</button>
+                {item.paymentMethod === "Stripe" && item.payment === false ?
+                  <button onClick={() => handleCheckout(item.orderId)} className="border border-dashed border-red-400 px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Checkout</button> :
+
+
+                  <button disabled={item.status === 'Delivered'} onClick={fetchOrders} className="border px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Track order</button>}
               </div>
             </div>
           )) : <div className="h-[40vh] w-full flex items-center justify-center"><h2 className="text-red-600 text-3xl font-bold">No Orders Found!</h2></div>
