@@ -95,7 +95,7 @@ const Orders = () => {
 
   // if payment method is stripe and payment is false then only show checkout button
   const handleCheckout = async (orderId) => {
-    setSmallLoading(true)
+    setSmallLoading(orderId)
     let orderToCartItems = []
 
     try {
@@ -183,7 +183,7 @@ const Orders = () => {
 
               <div className="ml-24 md:ml-0">
                 {item.paymentMethod === "Stripe" && item.payment === false ?
-                  (smallLoading ? <SmallLoading /> : <button onClick={() => handleCheckout(item.orderId)} className="border border-dashed border-red-400 px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Checkout</button>) :
+                  (smallLoading === item.orderId ? <SmallLoading /> : <button onClick={() => handleCheckout(item.orderId)} className="border border-dashed border-red-400 px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Checkout</button>) :
                   <button disabled={item.status === 'Delivered'} onClick={fetchOrders} className="border px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Track order</button>}
               </div>
             </div>
