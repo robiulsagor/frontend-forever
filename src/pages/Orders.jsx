@@ -97,7 +97,7 @@ const Orders = () => {
   const handleCheckout = async (orderId) => {
     setSmallLoading(true)
     let orderToCartItems = []
-    return
+
     try {
       const res = await axios.post(`${backendUrl}/api/order/handle-checkout`, { orderId }, { headers: { token } })
       if (res.data.success) {
