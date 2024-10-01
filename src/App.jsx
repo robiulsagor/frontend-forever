@@ -12,9 +12,9 @@ import Navbar from "./components/Navbar"
 import NotFound from "./pages/NotFound"
 import Footer from "./components/Footer"
 import Search from "./components/Search"
-import Verify from "./pages/verify"
+import Verify from "./pages/Verify"
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
