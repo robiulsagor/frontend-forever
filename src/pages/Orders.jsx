@@ -5,10 +5,12 @@ import axios from "axios"
 import { toast } from "react-toastify"
 import Loader from "../components/Loader"
 import { useNavigate } from "react-router-dom"
+import SmallLoading from "../components/SmallLoading"
 
 const Orders = () => {
   const { backendUrl, token, cartItems, setCartItems } = useContext(ShopContext)
   const [loading, setLoading] = useState(true)
+  const [smallLoading, setSmallLoading] = useState(false)
   const [orders, setOrders] = useState([])
   const navigate = useNavigate()
 
@@ -93,8 +95,9 @@ const Orders = () => {
 
   // if payment method is stripe and payment is false then only show checkout button
   const handleCheckout = async (orderId) => {
+    setSmallLoading(true)
     let orderToCartItems = []
-
+    return
     try {
       const res = await axios.post(`${backendUrl}/api/order/handle-checkout`, { orderId }, { headers: { token } })
       if (res.data.success) {
@@ -114,21 +117,26 @@ const Orders = () => {
           // add order to cart
           const addToCart = await axios.post(`${backendUrl}/api/cart/addMultipleToCart`, { data: orderToCartItems }, { headers: { token } })
           if (addToCart.data.success) {
+            setSmallLoading(false)
             navigate("/cart")
           } else {
+            setSmallLoading(false)
             toast.error("Error setting cart")
           }
         } else {
+          setSmallLoading(false)
           toast.error("Error deleting unpaid order")
         }
 
       } else {
+        setSmallLoading(false)
         toast.error("Error getting order details")
       }
 
 
     } catch (error) {
       console.log(error);
+      setSmallLoading(false)
       toast.error(error.message)
     }
   }
@@ -175,9 +183,7 @@ const Orders = () => {
 
               <div className="ml-24 md:ml-0">
                 {item.paymentMethod === "Stripe" && item.payment === false ?
-                  <button onClick={() => handleCheckout(item.orderId)} className="border border-dashed border-red-400 px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Checkout</button> :
-
-
+                  (smallLoading ? <SmallLoading /> : <button onClick={() => handleCheckout(item.orderId)} className="border border-dashed border-red-400 px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Checkout</button>) :
                   <button disabled={item.status === 'Delivered'} onClick={fetchOrders} className="border px-5 py-2 font-semibold text-sm rounded-md hover:bg-slate-200 transition disabled:bg-slate-200 disabled:text-gray-500  ">Track order</button>}
               </div>
             </div>
