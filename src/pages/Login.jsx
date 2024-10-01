@@ -14,7 +14,7 @@ const Login = () => {
   const location = useLocation()
   const from = location.state?.from || '/'
 
-  const { token, setToken } = useContext(ShopContext)
+  const { token, setToken, backendUrl } = useContext(ShopContext)
   const navigate = useNavigate()
 
   const handleSubmit = async e => {
@@ -23,7 +23,7 @@ const Login = () => {
 
     try {
       if (currentState === 'Login') {
-        const res = await axios.post('http://localhost:5000/api/user/login', { email, password })
+        const res = await axios.post(backendUrl + '/api/user/login', { email, password })
         if (res.data.success) {
           setToken(res.data.token)
           localStorage.setItem('token', res.data.token)
@@ -34,13 +34,15 @@ const Login = () => {
           setLoading(false)
         }
       } else {
-        const res = await axios.post('http://localhost:5000/api/user/register', { name, email, password })
+        const res = await axios.post(backendUrl + '/api/user/register', { name, email, password })
         if (res.data.success) {
           setCurrentState('Login')
           toast.success("Account created successfully!")
+          setLoading(false)
         } else {
           setLoading(false)
           toast.error(res.data.message)
+          setLoading(false)
         }
       }
     } catch (error) {
